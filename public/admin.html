@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الإدارة – أرشيف الامتحانات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  .admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+  .sidebar{background:var(--navy);color:#fff;padding:24px 16px;position:sticky;top:0;height:100vh;overflow:auto}
+  .sidebar .brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+  .sidebar .logo{width:44px;height:44px;border-radius:10px;background:var(--gold);color:#1a1a1a;font-weight:900;display:grid;place-items:center}
+  .sidebar nav a{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;color:rgba(255,255,255,.85);margin-bottom:4px}
+  .sidebar nav a:hover,.sidebar nav a.active{background:rgba(255,255,255,.12);color:#fff}
+  .sidebar nav a i{width:18px;text-align:center}
+  .main{padding:24px 32px;background:var(--gray-50)}
+  .topbar-admin{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+  .stat-card{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--shadow);border-inline-start:4px solid var(--gold)}
+  .stat-card h4{margin:0;font-size:.9rem;color:var(--gray-600)}
+  .stat-card .num{font-size:2rem;font-weight:900;color:var(--navy);margin:6px 0}
+  .panel{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-bottom:20px}
+  .panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+  .table{width:100%;border-collapse:collapse}
+  .table th,.table td{padding:12px 10px;text-align:right;border-bottom:1px solid var(--gray-100);font-size:.9rem;vertical-align:middle}
+  .table th{background:var(--gray-50);color:var(--navy);font-weight:700}
+  .table tr:hover td{background:var(--gray-50)}
+  .actions-cell{display:flex;gap:6px;flex-wrap:wrap}
+  .login-box{max-width:420px;margin:80px auto;background:#fff;border-radius:20px;padding:40px;box-shadow:var(--shadow)}
+  .login-box h2{text-align:center;color:var(--navy);margin:0 0 8px}
+  .login-box p{text-align:center;color:var(--gray-600);margin:0 0 24px}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;margin-bottom:6px;font-weight:600;color:var(--navy);font-size:.9rem}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .badge-role{background:var(--gold);color:#1a1a1a;padding:2px 8px;border-radius:999px;font-size:.75rem;font-weight:700}
+  .chart-wrap{height:260px}
+  @media (max-width:900px){.admin-layout{grid-template-columns:1fr}.sidebar{height:auto;position:relative}}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<div id="loginView" style="display:none">
+  <div class="login-box">
+    <h2>تسجيل الدخول</h2>
+    <p>لوحة إدارة الأرشيف</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>اسم المستخدم</label>
+        <input class="input" id="loginUser" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input class="input" id="loginPass" type="password" required autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" style="width:100%" type="submit"><i class="fa-solid fa-right-to-bracket"></i> دخول</button>
+      <div style="text-align:center;margin-top:16px"><a href="/" style="color:var(--gray-600)">← العودة للموقع</a></div>
+    </form>
+  </div>
+</div>
+
+<div id="adminView" style="display:none">
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div><b>لوحة الإدارة</b><br><small style="opacity:.7">أرشيف الامتحانات</small></div>
+      </div>
+      <nav id="sidebarNav">
+        <a data-tab="dashboard" class="active"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</a>
+        <a data-tab="departments"><i class="fa-solid fa-building"></i> الأقسام</a>
+        <a data-tab="subjects"><i class="fa-solid fa-book"></i> المواد</a>
+        <a data-tab="exams"><i class="fa-solid fa-file-pdf"></i> الامتحانات</a>
+        <a data-tab="settings"><i class="fa-solid fa-gear"></i> إعدادات الموقع</a>
+      </nav>
+      <div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)">
+        <div style="font-size:.85rem;opacity:.8;margin-bottom:8px" id="adminUserLabel"></div>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn" style="color:#fff;border-color:rgba(255,255,255,.3);width:100%"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+        <a href="/" class="btn btn-ghost btn-sm" style="color:#fff;border-color:rgba(255,255,255,.3);width:100%;margin-top:8px;text-align:center"><i class="fa-solid fa-house"></i> الموقع</a>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar-admin">
+        <div><h2 id="pageTitle" style="margin:0;color:var(--navy)">لوحة التحكم</h2><p style="margin:4px 0 0;color:var(--gray-600)" id="pageSub">إحصائيات وإدارة المحتوى</p></div>
+      </div>
+
+      <!-- Dashboard -->
+      <section class="tab" id="tab-dashboard">
+        <div class="cards-grid" id="statCards"></div>
+        <div class="panel">
+          <div class="panel-title"><h4>الامتحانات الحديثة</h4></div>
+          <table class="table"><thead><tr><th>العنوان</th><th>القسم</th><th>المادة</th><th>السنة</th><th>الفصل</th><th>تحميلات</th></tr></thead><tbody id="recentTable"></tbody></table>
+        </div>
+        <div class="panel"><div class="panel-title"><h4>التوزيع</h4></div><div class="chart-wrap"><canvas id="chartDepts"></canvas></div></div>
+      </section>
+
+      <!-- Departments -->
+      <section class="tab" id="tab-departments" style="display:none">
+        <div class="panel">
+          <div class="panel-title">
+            <h4>الأقسام</h4>
+            <button class="btn btn-primary btn-sm" id="addDeptBtn"><i class="fa-solid fa-plus"></i> إضافة قسم</button>
+          </div>
+          <table class="table"><thead><tr><th>#</th><th>اسم القسم</th><th>الوصف</th><th>المواد</th><th>الامتحانات</th><th>إجراءات</th></tr></thead><tbody id="deptTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- Subjects -->
+      <section class="tab" id="tab-subjects" style="display:none">
+        <div class="panel">
+          <div class="panel-title">
+            <h4>المواد الدراسية</h4>
+            <button class="btn btn-primary btn-sm" id="addSubjectBtn"><i class="fa-solid fa-plus"></i> إضافة مادة</button>
+          </div>
+          <div style="margin-bottom:12px">
+            <select id="subjectFilterDept" class="input" style="max-width:300px"></select>
+          </div>
+          <table class="table"><thead><tr><th>#</th><th>اسم المادة</th><th>القسم</th><th>المستوى</th><th>امتحانات</th><th>إجراءات</th></tr></thead><tbody id="subjectTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- Exams -->
+      <section class="tab" id="tab-exams" style="display:none">
+        <div class="panel">
+          <div class="panel-title">
+            <h4>الامتحانات (رفع/إدارة)</h4>
+            <button class="btn btn-primary btn-sm" id="addExamBtn"><i class="fa-solid fa-cloud-arrow-up"></i> رفع امتحان</button>
+          </div>
+          <table class="table"><thead><tr><th>#</th><th>العنوان</th><th>القسم</th><th>المادة</th><th>السنة</th><th>الفصل</th><th>الحجم</th><th>تحميلات</th><th>إجراءات</th></tr></thead><tbody id="examTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section class="tab" id="tab-settings" style="display:none">
+        <div class="panel">
+          <div class="panel-title"><h4>إعدادات الموقع</h4></div>
+          <form id="settingsForm">
+            <div class="form-group"><label>عنوان الموقع</label><input class="input" name="site_title"></div>
+            <div class="form-group"><label>عنوان البطل</label><input class="input" name="hero_title"></div>
+            <div class="form-group"><label>الوصف</label><input class="input" name="hero_subtitle"></div>
+            <div class="form-group"><label>نص التواصل</label><input class="input" name="footer_contact"></div>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
+          </form>
+          <hr style="margin:24px 0;border:none;border-top:1px solid var(--gray-100)">
+          <h4>تغيير كلمة المرور</h4>
+          <form id="pwdForm" style="max-width:400px;margin-top:12px">
+            <div class="form-group"><label>الحالية</label><input class="input" name="currentPassword" type="password" required></div>
+            <div class="form-group"><label>الجديدة</label><input class="input" name="newPassword" type="password" required minlength="6"></div>
+            <button class="btn btn-navy" type="submit">تغيير</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

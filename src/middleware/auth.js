@@ -1,0 +1,16 @@
+const jwt = require('jsonwebtoken');
+
+function requireAuth(req, res, next) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) return res.status(401).json({ error: 'غير مصرح: يرجى تسجيل الدخول' });
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.admin = payload;
+    next();
+  } catch {
+    return res.status(401).json({ error: 'جلسة منتهية أو غير صالحة' });
+  }
+}
+
+module.exports = { requireAuth };

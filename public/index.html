@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أرشيف امتحانات كلية الهندسة – جامعة الجفرة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="topbar">
+  <div class="container">
+    <span><i class="fa-solid fa-building-columns"></i> كلية الهندسة – جامعة الجفرة</span>
+    <span class="badge-gold">منصة أرشيف الامتحانات</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <div class="brand">
+      <div class="logo"><img src="/images/logo.png" alt="شعار كلية الهندسة"></div>
+      <div>
+        <h1>أرشيف امتحانات كلية الهندسة</h1>
+        <p>جامعة الجفرة</p>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#home">الرئيسية</a></li>
+        <li><a href="#departments">الأقسام</a></li>
+        <li><a href="#examsSection">الامتحانات</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="container">
+    <div>
+      <h2 id="heroTitle">أرشيف امتحانات كلية الهندسة</h2>
+      <p id="heroSubtitle">جامعة الجفرة – منصة أكاديمية للوصول إلى امتحانات السنوات السابقة بسهولة.</p>
+      <div class="stats-row">
+        <div class="stat"><b id="statExams">0</b><span>امتحان متاح</span></div>
+        <div class="stat"><b id="statDepts">0</b><span>قسم</span></div>
+        <div class="stat"><b id="statSubjects">0</b><span>مادة</span></div>
+      </div>
+    </div>
+    <div class="geo-wrap">
+      <span class="geo g1"></span>
+      <span class="geo g2"></span>
+      <span class="geo g3"></span>
+      <span class="geo g4"></span>
+      <span class="geo g5"></span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="search-card" id="searchBar">
+    <div class="filters">
+      <input class="input" id="searchInput" placeholder="بحث عن امتحان أو ملف...">
+      <select id="filterDept"></select>
+      <select id="filterSubject"></select>
+      <select id="filterYear"></select>
+      <select id="filterSem"></select>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost btn-sm" id="clearFilters"><i class="fa-solid fa-rotate-left"></i> مسح التصفية</button>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="departments">
+  <div class="container">
+    <div class="section-title">
+      <div>
+        <h3>أقسام الكلية</h3>
+        <p>اختر قسماً لعرض مواده وامتحاناته.</p>
+      </div>
+    </div>
+    <div class="grid grid-3" id="deptGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="examsSection">
+  <div class="container">
+    <div class="section-title">
+      <div>
+        <h3>الامتحانات</h3>
+        <p>تصفح وحمّل امتحانات السنوات السابقة.</p>
+      </div>
+    </div>
+    <div class="list-exams" id="examList"></div>
+  </div>
+</section>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h4 id="modalTitle">معاينة الامتحان</h4>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <iframe id="pdfFrame" class="pdf-frame" src="about:blank"></iframe>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h5>أرشيف امتحانات كلية الهندسة</h5>
+        <p>منصة أكاديمية مخصصة لجمع امتحانات كلية الهندسة – جامعة الجفرة وتوفيرها للطلاب بسهولة.</p>
+      </div>
+      <div>
+        <h5>تواصل للمساهمة</h5>
+        <p>للتواصل وإضافة أسئلة وامتحانات جديدة إلى الأرشيف.</p>
+        <div class="social">
+          <a href="https://wa.me/218943769102" target="_blank" rel="noopener" title="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="https://www.facebook.com/share/1DotxjdLmk/?mibextid=wwXIfr" target="_blank" rel="noopener" title="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>إعداد: جهاد سالم أحمد</span>
+      <span>© <span id="year"></span> جامعة الجفرة – كلية الهندسة</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script src="/js/api.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

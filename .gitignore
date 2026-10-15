@@ -1,0 +1,22 @@
+﻿# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local database and user data
+data/
+uploads/
+*.db
+*.db-wal
+*.db-shm
+
+# Build / archives
+deploy-ready.zip
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
